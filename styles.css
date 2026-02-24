@@ -11,6 +11,8 @@
 *{box-sizing:border-box}
 body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg);margin:0;color:var(--accent);}
 .app-header{padding:20px 20px;border-bottom:2px solid var(--brown-light);background:linear-gradient(135deg,rgba(93,76,71,.05),rgba(232,221,208,.08))}
+#sameline{display:flex;align-items:center;gap:4px}
+#appTitle{font-size:2.3rem;font-family: 'Playfair Display', serif;}
 .app-header h1{margin:0;font-size:1.3rem;font-weight:700;color:var(--brown-dark)}
 .subtitle{margin:6px 0 0;color:var(--muted);font-size:.9rem}
 .container{display:grid;grid-template-columns:340px 1fr;gap:24px;padding:20px;max-width:1200px;margin:20px auto}
