@@ -116,39 +116,58 @@ function renderList(items){
 function openModal(item){
   const statusClass_ = statusClass(item.status);
   modalBody.innerHTML = `
-    <div class="modal-body">
+    <div class="modal-header">
       <h2>${escapeHtml(item.company || '')}</h2>
-      <div class="modal-field">
-        <strong>Position:</strong>
-        <span>${escapeHtml(item.position || 'N/A')}</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Job Details</div>
+        <div class="modal-fields">
+          <div class="modal-field">
+            <strong>Position:</strong>
+            <span>${escapeHtml(item.position || 'N/A')}</span>
+          </div>
+          <div class="modal-field">
+            <strong>Company type:</strong>
+            <span>${escapeHtml(item.companyType || 'N/A')}</span>
+          </div>
+          <div class="modal-field">
+            <strong>Approach:</strong>
+            <span>${escapeHtml(item.approach || 'N/A')}</span>
+          </div>
+        </div>
       </div>
-      <div class="modal-field">
-        <strong>Company type:</strong>
-        <span>${escapeHtml(item.companyType || 'N/A')}</span>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Status & Timeline</div>
+        <div class="modal-fields">
+          <div class="modal-field">
+            <strong>Status:</strong>
+            <span><div class="status ${statusClass_}" style="display:inline-block">${escapeHtml(item.status || '')}</div></span>
+          </div>
+          <div class="modal-field">
+            <strong>Email date:</strong>
+            <span>${formatDate(item.emailDate) || 'N/A'}</span>
+          </div>
+        </div>
       </div>
-      <div class="modal-field">
-        <strong>Approach:</strong>
-        <span>${escapeHtml(item.approach || 'N/A')}</span>
-      </div>
-      <div class="modal-field">
-        <strong>Status:</strong>
-        <span><div class="status ${statusClass_}" style="display:inline-block">${escapeHtml(item.status || '')}</div></span>
-      </div>
-      <div class="modal-field">
-        <strong>Email date:</strong>
-        <span>${formatDate(item.emailDate) || 'N/A'}</span>
-      </div>
-      <div class="modal-field">
-        <strong>Email address:</strong>
-        <span>${escapeHtml(item.emailAddress || 'N/A')}</span>
-      </div>
-      <div class="modal-field">
-        <strong>Resume:</strong>
-        <span>${escapeHtml(item.resumeVersion || 'N/A')}</span>
-      </div>
-      <div class="modal-field">
-        <strong>Notes:</strong>
-        <span>${escapeHtml(item.notes || 'N/A').replace(/\n/g,'<br>')}</span>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Contact & Details</div>
+        <div class="modal-fields">
+          <div class="modal-field">
+            <strong>Email:</strong>
+            <span>${escapeHtml(item.emailAddress || 'N/A')}</span>
+          </div>
+          <div class="modal-field">
+            <strong>Resume:</strong>
+            <span>${escapeHtml(item.resumeVersion || 'N/A')}</span>
+          </div>
+          <div class="modal-field" style="grid-column:1/-1">
+            <strong>Notes:</strong>
+            <span>${escapeHtml(item.notes || 'N/A').replace(/\n/g,'<br>')}</span>
+          </div>
+        </div>
       </div>
     </div>
   `;
