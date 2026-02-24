@@ -60,24 +60,25 @@ function renderList(items){
     c.className = 'card';
     c.dataset.id = item.id;
     c.innerHTML = `
-      <div>
+      <div class="card-left">
         <h3>${escapeHtml(item.company || '')}</h3>
-        <div class="meta">
-          <span class="muted">${escapeHtml(item.position || '')}</span>
-          <span class="muted">${formatDate(item.emailDate)}</span>
+        <div class="card-info">
+          <span>${escapeHtml(item.position || 'N/A')}</span>
+          <span>•</span>
+          <span>${escapeHtml(item.approach || 'N/A')}</span>
+          <span>•</span>
+          <span>${formatDate(item.emailDate) || 'No date'}</span>
         </div>
       </div>
-      <div class="actions">
-        <div style="display:flex;gap:8px;align-items:center">
-          <div class="status ${statusClass(item.status)}">${escapeHtml(item.status || '')}</div>
-          <select class="quick-status" data-id="${item.id}">
-            <option value="sent">Sent</option>
-            <option value="follow up">Follow Up</option>
-            <option value="under process">Under Process</option>
-            <option value="rejected">Rejected</option>
-            <option value="accepted">Accepted</option>
-          </select>
-        </div>
+      <div class="card-right">
+        <div class="status ${statusClass(item.status)}">${escapeHtml(item.status || '')}</div>
+        <select class="quick-status" data-id="${item.id}">
+          <option value="sent">Sent</option>
+          <option value="follow up">Follow Up</option>
+          <option value="under process">Under Process</option>
+          <option value="rejected">Rejected</option>
+          <option value="accepted">Accepted</option>
+        </select>
         <button class="delete-btn" data-id="${item.id}">Delete</button>
       </div>
     `;
