@@ -115,11 +115,9 @@ function renderList(items){
 
 function openModal(item){
   const statusClass_ = statusClass(item.status);
+  const modalHeader = document.getElementById('modalHeader');
+  modalHeader.innerHTML = `<h2>${escapeHtml(item.company || '')}</h2>`;
   modalBody.innerHTML = `
-    <div class="modal-header">
-      <h2>${escapeHtml(item.company || '')}</h2>
-    </div>
-    <div class="modal-body">
       <div class="modal-section">
         <div class="modal-section-title">Job Details</div>
         <div class="modal-fields">
@@ -169,7 +167,6 @@ function openModal(item){
           </div>
         </div>
       </div>
-    </div>
   `;
   modal.classList.remove('hidden');
   modalDelete.dataset.id = item.id;
