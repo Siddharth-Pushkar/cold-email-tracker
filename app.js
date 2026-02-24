@@ -114,15 +114,43 @@ function renderList(items){
 }
 
 function openModal(item){
+  const statusClass_ = statusClass(item.status);
   modalBody.innerHTML = `
-    <h2>${escapeHtml(item.company || '')}</h2>
-    <p><strong>Position:</strong> ${escapeHtml(item.position || '')}</p>
-    <p><strong>Company type:</strong> ${escapeHtml(item.companyType || '')}</p>
-    <p><strong>Approach:</strong> ${escapeHtml(item.approach || '')}</p>
-    <p><strong>Status:</strong> ${escapeHtml(item.status || '')}</p>
-    <p><strong>Email date:</strong> ${formatDate(item.emailDate)}</p>
-    <p><strong>Resume:</strong> ${escapeHtml(item.resumeVersion || '')}</p>
-    <p><strong>Notes:</strong><br>${escapeHtml(item.notes || '')}</p>
+    <div class="modal-body">
+      <h2>${escapeHtml(item.company || '')}</h2>
+      <div class="modal-field">
+        <strong>Position:</strong>
+        <span>${escapeHtml(item.position || 'N/A')}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Company type:</strong>
+        <span>${escapeHtml(item.companyType || 'N/A')}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Approach:</strong>
+        <span>${escapeHtml(item.approach || 'N/A')}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Status:</strong>
+        <span><div class="status ${statusClass_}" style="display:inline-block">${escapeHtml(item.status || '')}</div></span>
+      </div>
+      <div class="modal-field">
+        <strong>Email date:</strong>
+        <span>${formatDate(item.emailDate) || 'N/A'}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Email address:</strong>
+        <span>${escapeHtml(item.emailAddress || 'N/A')}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Resume:</strong>
+        <span>${escapeHtml(item.resumeVersion || 'N/A')}</span>
+      </div>
+      <div class="modal-field">
+        <strong>Notes:</strong>
+        <span>${escapeHtml(item.notes || 'N/A').replace(/\n/g,'<br>')}</span>
+      </div>
+    </div>
   `;
   modal.classList.remove('hidden');
   modalDelete.dataset.id = item.id;
@@ -148,6 +176,7 @@ appForm.addEventListener('submit', async (e)=>{
     approach: f.get('approach') || '',
     status: f.get('status') || 'sent',
     emailDate: f.get('emailDate') ? new Date(f.get('emailDate')) : null,
+    emailAddress: f.get('emailAddress') || '',
     resumeVersion: f.get('resumeVersion') || '',
     notes: f.get('notes') || '',
     createdAt: serverTimestamp()
