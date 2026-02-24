@@ -54,7 +54,10 @@
     </section>
 
     <section class="list-section">
-      <h2>Applications</h2>
+      <div class="list-header">
+        <h2>Applications</h2>
+        <input id="search" type="search" placeholder="Search by company or resume version" />
+      </div>
       <div id="cards" class="cards-grid"></div>
     </section>
   </main>
@@ -63,6 +66,9 @@
     <div class="modal-content">
       <button id="closeModal" class="close">✕</button>
       <div id="modalBody"></div>
+      <div class="modal-actions">
+        <button id="modalDelete" class="delete">Delete</button>
+      </div>
     </div>
   </div>
 

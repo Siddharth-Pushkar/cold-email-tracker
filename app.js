@@ -9,7 +9,8 @@ import {
   orderBy,
   serverTimestamp,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 const app = initializeApp(firebaseConfig);
@@ -22,10 +23,23 @@ const cards = document.getElementById('cards');
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modalBody');
 const closeModal = document.getElementById('closeModal');
+const modalDelete = document.getElementById('modalDelete');
+const searchInput = document.getElementById('search');
+
+let allItems = [];
+let currentFilter = '';
 
 function formatDate(d){
   if(!d) return '';
-  try{ const dt = new Date(d); return dt.toLocaleDateString(); }catch(e){return String(d)}
+  // Firestore Timestamp has toDate()
+  if(typeof d === 'object' && d !== null && typeof d.toDate === 'function'){
+    return d.toDate().toLocaleDateString();
+  }
+  // If already a Date
+  if(d instanceof Date) return d.toLocaleDateString();
+  // If ISO string
+  try{ const dt = new Date(d); if(!isNaN(dt)) return dt.toLocaleDateString(); }catch(e){}
+  return String(d);
 }
 
 function statusClass(status){
@@ -54,14 +68,17 @@ function renderList(items){
         </div>
       </div>
       <div class="actions">
-        <div class="status ${statusClass(item.status)}">${escapeHtml(item.status || '')}</div>
-        <select class="quick-status" data-id="${item.id}">
-          <option value="sent">Sent</option>
-          <option value="follow up">Follow Up</option>
-          <option value="under process">Under Process</option>
-          <option value="rejected">Rejected</option>
-          <option value="accepted">Accepted</option>
-        </select>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div class="status ${statusClass(item.status)}">${escapeHtml(item.status || '')}</div>
+          <select class="quick-status" data-id="${item.id}">
+            <option value="sent">Sent</option>
+            <option value="follow up">Follow Up</option>
+            <option value="under process">Under Process</option>
+            <option value="rejected">Rejected</option>
+            <option value="accepted">Accepted</option>
+          </select>
+        </div>
+        <button class="delete-btn" data-id="${item.id}">Delete</button>
       </div>
     `;
 
@@ -83,6 +100,14 @@ function renderList(items){
       }catch(err){console.error('update status',err)}
     });
 
+    const delBtn = c.querySelector('.delete-btn');
+    delBtn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      const id = e.target.dataset.id;
+      if(!confirm('Delete this application?')) return;
+      try{ await deleteDoc(doc(db,'applications',id)); }catch(err){console.error('delete',err)}
+    });
+
     cards.appendChild(c);
   });
 }
@@ -99,10 +124,18 @@ function openModal(item){
     <p><strong>Notes:</strong><br>${escapeHtml(item.notes || '')}</p>
   `;
   modal.classList.remove('hidden');
+  modalDelete.dataset.id = item.id;
 }
 
 closeModal.addEventListener('click',()=>modal.classList.add('hidden'));
 modal.addEventListener('click',(e)=>{if(e.target===modal) modal.classList.add('hidden')});
+
+modalDelete.addEventListener('click', async ()=>{
+  const id = modalDelete.dataset.id;
+  if(!id) return;
+  if(!confirm('Delete this application?')) return;
+  try{ await deleteDoc(doc(db,'applications',id)); modal.classList.add('hidden'); }catch(err){console.error('modal delete',err)}
+});
 
 appForm.addEventListener('submit', async (e)=>{
   e.preventDefault();
@@ -132,8 +165,22 @@ onSnapshot(q, snapshot=>{
     const d = docSnap.data();
     items.push({id:docSnap.id,...d});
   });
-  renderList(items);
+  allItems = items;
+  applyFilter();
 });
+
+function applyFilter(){
+  const term = (currentFilter || '').trim().toLowerCase();
+  if(!term){ renderList(allItems); return; }
+  const filtered = allItems.filter(it=>{
+    const company = (it.company||'').toLowerCase();
+    const resume = (it.resumeVersion||'').toLowerCase();
+    return company.includes(term) || resume.includes(term);
+  });
+  renderList(filtered);
+}
+
+searchInput.addEventListener('input',(e)=>{ currentFilter = e.target.value; applyFilter(); });
 
 function escapeHtml(str){
   if(!str) return '';
